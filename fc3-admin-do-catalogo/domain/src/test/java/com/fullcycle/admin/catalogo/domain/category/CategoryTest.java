@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
                 Category.newCategory(expectedName, expectedDescription, expectedIsActive);
 
         Assertions.assertNotNull(actualCategory);
-        Assertions.assertNotNull(actualCategory.getId());
+        Assertions.assertNotNull(actualCategory.getID());
         Assertions.assertEquals(expectedName, actualCategory.getName());
         Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
         Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
