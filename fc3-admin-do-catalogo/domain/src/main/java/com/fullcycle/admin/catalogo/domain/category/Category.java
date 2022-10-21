@@ -1,9 +1,10 @@
 package com.fullcycle.admin.catalogo.domain.category;
 
 import com.fullcycle.admin.catalogo.domain.AggregateRoot;
+import com.fullcycle.admin.catalogo.domain.validation.ValidationHandler;
 
 import java.time.Instant;
-import java.util.UUID;
+
 
 public class Category extends AggregateRoot<CategoryID> {
     private String name;
@@ -37,6 +38,12 @@ public class Category extends AggregateRoot<CategoryID> {
         return new Category(id, aName, aDescription, aIsActive,now, now, null);
     }
 
+    @Override
+    public void validate(final ValidationHandler handler) {
+        new CategoryValidator(this, handler).validate();
+    }
+
+    @Override
     public CategoryID getID() {
         return id;
     }
