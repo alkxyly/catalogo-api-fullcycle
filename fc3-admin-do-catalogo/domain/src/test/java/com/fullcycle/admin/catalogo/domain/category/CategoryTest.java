@@ -1,12 +1,13 @@
 package com.fullcycle.admin.catalogo.domain.category;
 
-import com.fullcycle.admin.catalogo.domain.category.Category;
 import com.fullcycle.admin.catalogo.domain.exceptions.DomainException;
 import com.fullcycle.admin.catalogo.domain.validation.handler.ThrowsValidationHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
- class CategoryTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class CategoryTest {
 
     @Test
      void givenAValidParams_whenCallNewCategory_thenInstantiateACategory(){
@@ -19,9 +20,9 @@ import org.junit.jupiter.api.Test;
 
         Assertions.assertNotNull(actualCategory);
         Assertions.assertNotNull(actualCategory.getID());
-        Assertions.assertEquals(expectedName, actualCategory.getName());
-        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
-        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+        assertEquals(expectedName, actualCategory.getName());
+        assertEquals(expectedDescription, actualCategory.getDescription());
+        assertEquals(expectedIsActive, actualCategory.isActive());
 
         Assertions.assertNotNull(actualCategory.getCreatedAt());
         Assertions.assertNotNull(actualCategory.getUpdatedAt());
@@ -37,12 +38,12 @@ import org.junit.jupiter.api.Test;
        final var expectedErrorMessage = "'name' should not be null";
 
        final var actualCategory =
-               Category.newCategory(expectedErrorMessage, expectedDescription, expectedIsActive);
+               Category.newCategory(expectedName, expectedDescription, expectedIsActive);
 
        final var actualException = Assertions.assertThrows(DomainException.class,
                () -> actualCategory.validate(new ThrowsValidationHandler()));
 
-       Assertions.assertEquals(expectedErrorCount,actualException.getErrors().size());
-       Assertions.assertEquals(expectedErrorMessage,actualException.getErrors());
+       assertEquals(expectedErrorCount,actualException.getErrors().size());
+       assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
     }
 }
