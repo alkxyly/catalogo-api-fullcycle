@@ -72,4 +72,36 @@ class CreateCategoryUseCaseTest {
 
         Mockito.verify(gateway, times(0)).create(any());
     }
+
+    @Test
+    void givenAValidCategory_whenCallCreateCategory_thenShouldReturnCategoryInactivate(){
+        final String expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = false;
+
+        final var aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
+        final var gateway =  Mockito.mock(CategoryGateway.class);
+
+        Mockito.when(gateway.create(any()))
+                .thenAnswer(returnsFirstArg());
+
+        final var useCase = new DefaultCreateCategoryUseCase(gateway);
+
+        final var aCategoryOutput = useCase.execute(aCommand);
+
+        assertNotNull(aCategoryOutput);
+        assertNotNull(aCategoryOutput.id());
+
+        verify(gateway, Mockito.times(1))
+                .create(Mockito.argThat(aCategory ->{
+                            return Objects.equals(expectedName, aCategory.getName())
+                                    && Objects.equals(expectedDescription, aCategory.getDescription())
+                                    && Objects.equals(expectedIsActive, aCategory.isActive())
+                                    && Objects.nonNull(aCategory.getID())
+                                    && Objects.nonNull(aCategory.getCreatedAt())
+                                    && Objects.nonNull(aCategory.getUpdatedAt())
+                                    && Objects.nonNull(aCategory.getDeletedAt());
+                        }
+                ));
+    }
 }
