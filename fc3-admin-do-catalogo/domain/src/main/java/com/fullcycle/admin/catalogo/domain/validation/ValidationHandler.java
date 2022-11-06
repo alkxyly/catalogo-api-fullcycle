@@ -14,7 +14,7 @@ public interface ValidationHandler {
     default boolean hasError(){
         return getErrors() != null && !getErrors().isEmpty();
     }
-    public interface Validation{
+    interface Validation{
         void validate();
     }
 }
