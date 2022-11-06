@@ -22,6 +22,10 @@ public class Notification implements ValidationHandler {
         return new Notification(new ArrayList<>()).append(anError);
     }
 
+    public static Notification create(final Throwable t){
+        return create(new Error(t.getMessage()));
+    }
+
     @Override
     public Notification append(Error anError) {
         this.errors.add(anError);
@@ -40,7 +44,7 @@ public class Notification implements ValidationHandler {
             aValidation.validate();
         }catch (final DomainException ex){
             this.errors.addAll(ex.getErrors());
-        }catch (final Throwable t){
+        }catch (final Exception t){
             this.errors.add(new Error(t.getMessage()));
         }
         return this;
