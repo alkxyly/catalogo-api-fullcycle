@@ -25,6 +25,10 @@ public class CategoryID extends Identifier {
         return new CategoryID(anId.toString().toLowerCase());
     }
 
+    public String getValue() {
+        return value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
