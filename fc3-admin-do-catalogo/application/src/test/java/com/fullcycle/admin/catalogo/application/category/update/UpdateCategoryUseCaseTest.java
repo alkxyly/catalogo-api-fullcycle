@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.Mockito.*;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -27,7 +28,7 @@ class UpdateCategoryUseCaseTest {
 
     @BeforeEach
     void clean(){
-        Mockito.reset(categoryGateway);
+        reset(categoryGateway);
     }
 
     //1. Teste do caminho feliz
@@ -54,10 +55,10 @@ class UpdateCategoryUseCaseTest {
                 expectedDescription,
                 expectedIsActive);
 
-        Mockito.when(categoryGateway.findById(Mockito.eq(expectedId)))
+        when(categoryGateway.findById(eq(expectedId)))
                     .thenReturn(Optional.of(aCategory.clone()));
 
-        Mockito.when(categoryGateway.update(Mockito.any()))
+        when(categoryGateway.update(any()))
                 .thenAnswer(returnsFirstArg());
 
         final var actualOutput = useCase.execute(aCommand).get();
@@ -65,11 +66,11 @@ class UpdateCategoryUseCaseTest {
         Assertions.assertNotNull(actualOutput);
         Assertions.assertNotNull(actualOutput.id());
 
-        Mockito.verify(categoryGateway, Mockito.times(1))
-                .findById(Mockito.eq(expectedId));
+        verify(categoryGateway, times(1))
+                .findById(eq(expectedId));
 
-        Mockito.verify(categoryGateway, Mockito.times(1))
-                .update(Mockito.argThat(
+        verify(categoryGateway, times(1))
+                .update(argThat(
                         aUpdateCategory ->
                             Objects.equals(expectedName, aUpdateCategory.getName())
                                     && Objects.equals(expectedDescription, aUpdateCategory.getDescription())
@@ -79,5 +80,30 @@ class UpdateCategoryUseCaseTest {
                                     && aCategory.getUpdatedAt().isBefore(aUpdateCategory.getUpdatedAt())
                                     && Objects.isNull(aUpdateCategory.getDeletedAt())
                 ));
+    }
+
+    @Test
+    void givenAInvalidName_whenCallsUpdateCategory_thenShouldReturnDomainException() {
+        final var aCategory =
+                Category.newCategory("Filme", null, true);
+
+        final var expectedId = aCategory.getID();
+        final String expectedName = null;
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+        final var expectedErrorMessage = "'name' should not be null";
+        final var expectedErrorCount = 1;
+
+        final var aCommand =
+                UpdateCategoryCommand.with(expectedId.getValue(),expectedName, expectedDescription, expectedIsActive);
+
+        when(categoryGateway.findById(expectedId)).thenReturn(Optional.of(Category.with(aCategory)));
+
+        final var notification = useCase.execute(aCommand).getLeft();
+
+        Assertions.assertEquals(expectedErrorCount, notification.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
+
+        Mockito.verify(categoryGateway, times(0)).update(any());
     }
 }
