@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class DefaultDeleteCategoryUseCase extends DeleteCategoryUseCase{
 
-    private CategoryGateway categoryGateway;
+    private final CategoryGateway categoryGateway;
 
     public DefaultDeleteCategoryUseCase(CategoryGateway categoryGateway){
         this.categoryGateway = Objects.requireNonNull(categoryGateway);
