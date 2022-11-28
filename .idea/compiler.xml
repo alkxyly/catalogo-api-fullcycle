@@ -13,7 +13,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="application" target="17" />
-      <module name="domain" target="17" />
+      <module name="domain" target="16" />
       <module name="fc3-admin-do-catalogo" target="17" />
       <module name="infrastructure" target="17" />
     </bytecodeTargetLevel>
